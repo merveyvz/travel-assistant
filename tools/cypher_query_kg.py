@@ -22,15 +22,33 @@ Examples:
 
 Question: "Which museums are in Alsancak district?"
 Cypher:
-MATCH (m:Venue)-[:IS_TYPE]->(:Venuetype {id: "Müze"})
-MATCH (m)-[:LOCATED_IN]->(d:District {id: "Alsancak"})
+MATCH (m:Venue)-[:IS_TYPE]->(:Venuetype {{id: "Müze"}})
+MATCH (m)-[:LOCATED_IN]->(d:District {{id: "Alsancak"}})
 RETURN m.id AS museumName
-
 
 Question: "Deniz Kent Restoran'ı hangi türde  ürünler sunuyor?
 Cypher:
-MATCH (:Restaurant {id:"Deniz Kent Restoran"})-[:HAS_CUISINE]->(c)  
+MATCH (:Restaurant {{id:"Deniz Kent Restoran"}})-[:HAS_CUISINE]->(c)  
 RETURN c.id  LIMIT 25;
+
+Question: "Alsancak'ta Fransız Mutfağına ait ürünleri sunan restoranlar hangileri?"
+Cypher:
+MATCH (r:Restaurant)-[:HAS_CUISINE]->(c:Cuisinetype {{id:"Fransız Mutfağı"}})
+MATCH (r)-[:LOCATED_IN]->(d:District {{id:"Alsancak"}})
+RETURN r.id AS Restaurant
+
+Question: "Hangi yerlerde bisiklet yolu bulunmaktadır?"
+Cypher Query:
+MATCH (place)-[:HAS_FEATURE]->(f:Feature)
+WHERE toLower(f.id) CONTAINS toLower("Bisiklet Yolu")
+RETURN place.id AS PlaceWithBikePath
+
+Question:"Tatlıları ile öne çıkan mekanlar ve konumları?"
+Cypher:
+MATCH (venue)-[:KNOWN_FOR]->(d:Dish)
+WHERE toLower(d.id) CONTAINS toLower("tatlı")
+OPTIONAL MATCH (venue)-[:LOCATED_IN]->(district:District)
+RETURN venue.id AS VenueName, d.id AS KnownForDish, district.id AS DistrictName
 
 Schema:
 {schema}
