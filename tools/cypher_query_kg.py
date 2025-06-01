@@ -20,6 +20,18 @@ Instructions:
 
 Examples:
 
+Question: "Which museums are in Alsancak district?"
+Cypher:
+MATCH (m:Venue)-[:IS_TYPE]->(:Venuetype {id: "Müze"})
+MATCH (m)-[:LOCATED_IN]->(d:District {id: "Alsancak"})
+RETURN m.id AS museumName
+
+
+Question: "Deniz Kent Restoran'ı hangi türde  ürünler sunuyor?
+Cypher:
+MATCH (:Restaurant {id:"Deniz Kent Restoran"})-[:HAS_CUISINE]->(c)  
+RETURN c.id  LIMIT 25;
+
 Schema:
 {schema}
 
